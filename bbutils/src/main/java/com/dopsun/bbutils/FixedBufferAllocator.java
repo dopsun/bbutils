@@ -19,6 +19,8 @@ package com.dopsun.bbutils;
 import java.util.Objects;
 
 /**
+ * Allocator for {@link FixedBuffer}.
+ * 
  * @author Dop Sun
  * @since 1.0.0
  */
