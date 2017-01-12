@@ -17,11 +17,11 @@ To be added
 There are 3 types of auto buffer:
 
 * [Arithmetic Progression (AP)](https://en.wikipedia.org/wiki/Arithmetic_progression): grows following AP sequences, with initial capacity and difference.
-** Factory method: ``Buffers.apAutoBuffer(Allocator allocator, int initCapacity, int difference)``
+  * Factory method: ``Buffers.apAutoBuffer(Allocator allocator, int initCapacity, int difference)``
 * [Geometric Progression (GP)](https://en.wikipedia.org/wiki/Geometric_progression): grows following GP sequences, with initial capacity and ratio.
-** Factory method: ``Buffers.gpAutoBuffer(Allocator allocator, int initCapacity, double ratio)``
+  * Factory method: ``Buffers.gpAutoBuffer(Allocator allocator, int initCapacity, double ratio)``
 * [Power of 2 (POW2)](https://en.wikipedia.org/wiki/Power_of_two): grows with double capacity.
-** Factory method: ``Buffers.pow2AutoBuffer(Allocator allocator, int initCapacity)``
+  * Factory method: ``Buffers.pow2AutoBuffer(Allocator allocator, int initCapacity)``
 
 ## Allocator
 * [Allocator](bbutils/src/main/java/com/dopsun/bbutils/Allocator.java) allocator for ``Buffer``.
