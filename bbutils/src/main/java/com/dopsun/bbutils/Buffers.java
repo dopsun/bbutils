@@ -37,4 +37,87 @@ public final class Buffers {
 
         return new ByteBufferFixedBuffer(byteBuffer);
     }
+
+    /**
+     * Makes an {@link AutoBuffer} with <code>allocator</code> and <code>initCapacity</code>. The
+     * returned auto buffer will double existing capacity every time grows.
+     * 
+     * @param allocator
+     *            allocator for initialization and growing
+     * @param initCapacity
+     *            initial capacity, should be greater than zero and is power of 2.
+     * 
+     * @return an {@link AutoBuffer}
+     */
+    public static AutoBuffer pow2AutoBuffer(Allocator allocator, int initCapacity) {
+        Objects.requireNonNull(allocator);
+        if (initCapacity <= 0) {
+            throw new IllegalArgumentException("initCapacity invalid: " + initCapacity);
+        }
+        if (!isPow2(initCapacity)) {
+            throw new IllegalArgumentException("initCapacity is not power of 2: " + initCapacity);
+        }
+
+        return new AutoBufferImpl(allocator, initCapacity, old -> old * 2);
+    }
+
+    /**
+     * Make a new {@link AutoBuffer}, growing with Arithmetic Progression (AP).
+     * 
+     * @param allocator
+     *            allocator for initialization and growing
+     * @param initCapacity
+     *            initial capacity, should be greater than zero.
+     * @param difference
+     *            common difference to grow, and should be greater than zero.
+     * 
+     * @return an {@link AutoBuffer}
+     */
+    public static AutoBuffer apAutoBuffer(Allocator allocator, int initCapacity, int difference) {
+        Objects.requireNonNull(allocator);
+        if (initCapacity <= 0) {
+            throw new IllegalArgumentException("initCapacity invalid: " + initCapacity);
+        }
+        if (difference <= 0) {
+            throw new IllegalArgumentException("difference invalid: " + difference);
+        }
+
+        return new AutoBufferImpl(allocator, initCapacity, old -> old + difference);
+    }
+
+    /**
+     * Make a new {@link AutoBuffer}, growing with Geometric Progression (GP).
+     * 
+     * @param allocator
+     *            allocator for initialization and growing
+     * @param initCapacity
+     *            initial capacity, should be greater than zero.
+     * @param ratio
+     *            ratio to grow, should greater than one and
+     *            <code>initCapacity * (ratio - 1) >= 1</code>.
+     * 
+     * @return an {@link AutoBuffer}
+     */
+    public static AutoBuffer gpAutoBuffer(Allocator allocator, int initCapacity, double ratio) {
+        Objects.requireNonNull(allocator);
+        if (initCapacity <= 0) {
+            throw new IllegalArgumentException("initCapacity invalid: " + initCapacity);
+        }
+        if (ratio <= 1) {
+            throw new IllegalArgumentException("ratio invalid: " + ratio);
+        }
+        if (initCapacity * (ratio - 1) < 1) {
+            throw new IllegalArgumentException("ratio too small: " + ratio);
+        }
+
+        return new AutoBufferImpl(allocator, initCapacity, old -> (int) (old * ratio));
+    }
+
+    /**
+     * From Guava IntMath.
+     */
+    private static boolean isPow2(int x) {
+        return x > 0 & (x & (x - 1)) == 0;
+    }
+
 }
