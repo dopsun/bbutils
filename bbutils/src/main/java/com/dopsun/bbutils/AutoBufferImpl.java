@@ -29,14 +29,12 @@ import javax.annotation.concurrent.NotThreadSafe;
  */
 @NotThreadSafe
 final class AutoBufferImpl implements AutoBuffer {
-    @SuppressWarnings("unused")
-    private final Allocator allocator;
+    private final FixedBufferAllocator allocator;
 
-    @SuppressWarnings("unused")
     private final IntUnaryOperator nextCapacityProducer;
 
     /** this is not null, but can be changed. */
-    private Buffer buffer;
+    private FixedBuffer fixedBuffer;
 
     /**
      * @param allocator
@@ -49,7 +47,7 @@ final class AutoBufferImpl implements AutoBuffer {
      * @throws IllegalArgumentException
      *             if <code>initCapacity</code> is less than or equal to zero.
      */
-    public AutoBufferImpl(Allocator allocator, int initCapacity,
+    public AutoBufferImpl(FixedBufferAllocator allocator, int initCapacity,
             IntUnaryOperator nextCapacityProducer) {
         Objects.requireNonNull(allocator);
         if (initCapacity <= 0) {
@@ -60,11 +58,74 @@ final class AutoBufferImpl implements AutoBuffer {
         this.allocator = allocator;
         this.nextCapacityProducer = nextCapacityProducer;
 
-        this.buffer = allocator.alloc(initCapacity);
+        this.fixedBuffer = allocator.alloc(initCapacity);
+    }
+
+    @Override
+    public int position() {
+        return fixedBuffer.position();
+    }
+
+    @Override
+    public void position(int newPosition) {
+        fixedBuffer.position(newPosition);
+    }
+
+    @Override
+    public void flip() {
+        fixedBuffer.flip();
     }
 
     @Override
     public void clear() {
-        buffer.clear();
+        fixedBuffer.clear();
+    }
+
+    @Override
+    public void putBuffer(Buffer buffer) {
+        Objects.requireNonNull(buffer);
+
+        fixedBuffer.putBuffer(buffer);
+    }
+
+    @Override
+    public byte getByte() {
+        return fixedBuffer.getByte();
+    }
+
+    @Override
+    public byte getByte(int index) {
+        return fixedBuffer.getByte(index);
+    }
+
+    @Override
+    public void putByte(byte value) {
+        ensureCapacity(1);
+
+        fixedBuffer.putByte(value);
+    }
+
+    @Override
+    public void putByte(int index, byte value) {
+        fixedBuffer.putByte(index, value);
+    }
+
+    private void ensureCapacity(int deltaCapacity) {
+        int expectedCapacity = fixedBuffer.position() + deltaCapacity;
+        if (fixedBuffer.capacity() >= expectedCapacity) {
+            return;
+        }
+
+        int nextCapacity = nextCapacityProducer.applyAsInt(fixedBuffer.capacity());
+        while (nextCapacity < expectedCapacity) {
+            nextCapacity = nextCapacityProducer.applyAsInt(nextCapacity);
+        }
+
+        FixedBuffer newBuffer = allocator.alloc(nextCapacity);
+        fixedBuffer.flip();
+        newBuffer.putBuffer(fixedBuffer);
+
+        allocator.release(fixedBuffer);
+        fixedBuffer = newBuffer;
     }
 }

@@ -27,14 +27,14 @@ public final class Allocators {
     /** Sync for lazy initialized fields. */
     private static final Object lazy_sync = new Object();
 
-    private static volatile Allocator directAllocator;
-    private static volatile Allocator heapAllocator;
+    private static volatile FixedBufferAllocator directAllocator;
+    private static volatile FixedBufferAllocator heapAllocator;
 
     /**
      * @return allocator with direct memory.
      */
-    public static Allocator direct() {
-        Allocator alloc = directAllocator;
+    public static FixedBufferAllocator direct() {
+        FixedBufferAllocator alloc = directAllocator;
         if (alloc != null) {
             return alloc;
         }
@@ -54,8 +54,8 @@ public final class Allocators {
     /**
      * @return allocator with heap memory.
      */
-    public static Allocator heap() {
-        Allocator alloc = heapAllocator;
+    public static FixedBufferAllocator heap() {
+        FixedBufferAllocator alloc = heapAllocator;
         if (alloc != null) {
             return alloc;
         }

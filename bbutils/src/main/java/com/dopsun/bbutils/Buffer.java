@@ -27,9 +27,64 @@ import java.nio.ByteBuffer;
  * @since 1.0.0
  */
 public interface Buffer {
+    /**
+     * @return
+     * 
+     * @see ByteBuffer#position()
+     */
+    int position();
+
+    /**
+     * @param newPosition
+     * 
+     * @see ByteBuffer#position(int)
+     */
+    void position(int newPosition);
+
+    /**
+     * @see ByteBuffer#flip()
+     */
+    void flip();
 
     /**
      * @see ByteBuffer#clear()
      */
     void clear();
+
+    /**
+     * @param buffer
+     * 
+     * @see ByteBuffer#put(ByteBuffer)
+     */
+    void putBuffer(Buffer buffer);
+
+    /**
+     * @return
+     * 
+     * @see ByteBuffer#get()
+     */
+    byte getByte();
+
+    /**
+     * @param index
+     * @return
+     * 
+     * @see ByteBuffer#get(int)
+     */
+    byte getByte(int index);
+
+    /**
+     * @param value
+     * 
+     * @see ByteBuffer#put(byte)
+     */
+    void putByte(byte value);
+
+    /**
+     * @param index
+     * @param value
+     * 
+     * @see ByteBuffer#put(int, byte)
+     */
+    void putByte(int index, byte value);
 }

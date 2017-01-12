@@ -38,6 +38,21 @@ final class ByteBufferFixedBuffer implements FixedBuffer, HasByteBuffer {
     }
 
     @Override
+    public int position() {
+        return byteBuffer.position();
+    }
+
+    @Override
+    public void position(int newPosition) {
+        byteBuffer.position(newPosition);
+    }
+
+    @Override
+    public void flip() {
+        byteBuffer.flip();
+    }
+
+    @Override
     public int capacity() {
         return byteBuffer.capacity();
     }
@@ -45,5 +60,36 @@ final class ByteBufferFixedBuffer implements FixedBuffer, HasByteBuffer {
     @Override
     public void clear() {
         byteBuffer.clear();
+    }
+
+    @Override
+    public void putBuffer(Buffer buffer) {
+        Objects.requireNonNull(buffer);
+        if (!(buffer instanceof HasByteBuffer)) {
+            throw new IllegalArgumentException("Unsupported buffer: " + buffer);
+        }
+
+        HasByteBuffer hasByteBuffer = (HasByteBuffer) buffer;
+        byteBuffer.put(hasByteBuffer.getByteBuffer());
+    }
+
+    @Override
+    public byte getByte() {
+        return byteBuffer.get();
+    }
+
+    @Override
+    public byte getByte(int index) {
+        return byteBuffer.get(index);
+    }
+
+    @Override
+    public void putByte(byte value) {
+        byteBuffer.put(value);
+    }
+
+    @Override
+    public void putByte(int index, byte value) {
+        byteBuffer.put(index, value);
     }
 }

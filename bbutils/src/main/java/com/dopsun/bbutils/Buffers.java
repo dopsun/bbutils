@@ -49,7 +49,7 @@ public final class Buffers {
      * 
      * @return an {@link AutoBuffer}
      */
-    public static AutoBuffer pow2AutoBuffer(Allocator allocator, int initCapacity) {
+    public static AutoBuffer pow2AutoBuffer(FixedBufferAllocator allocator, int initCapacity) {
         Objects.requireNonNull(allocator);
         if (initCapacity <= 0) {
             throw new IllegalArgumentException("initCapacity invalid: " + initCapacity);
@@ -73,7 +73,8 @@ public final class Buffers {
      * 
      * @return an {@link AutoBuffer}
      */
-    public static AutoBuffer apAutoBuffer(Allocator allocator, int initCapacity, int difference) {
+    public static AutoBuffer apAutoBuffer(FixedBufferAllocator allocator, int initCapacity,
+            int difference) {
         Objects.requireNonNull(allocator);
         if (initCapacity <= 0) {
             throw new IllegalArgumentException("initCapacity invalid: " + initCapacity);
@@ -98,7 +99,8 @@ public final class Buffers {
      * 
      * @return an {@link AutoBuffer}
      */
-    public static AutoBuffer gpAutoBuffer(Allocator allocator, int initCapacity, double ratio) {
+    public static AutoBuffer gpAutoBuffer(FixedBufferAllocator allocator, int initCapacity,
+            double ratio) {
         Objects.requireNonNull(allocator);
         if (initCapacity <= 0) {
             throw new IllegalArgumentException("initCapacity invalid: " + initCapacity);
