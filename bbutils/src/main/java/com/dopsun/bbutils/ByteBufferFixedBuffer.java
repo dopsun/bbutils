@@ -16,6 +16,7 @@
 
 package com.dopsun.bbutils;
 
+import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 
@@ -24,6 +25,19 @@ import java.util.Objects;
  * @since 1.0.0
  */
 final class ByteBufferFixedBuffer implements FixedBuffer, HasByteBuffer {
+    private static final Field markField;
+
+    static {
+        try {
+            Field field = Buffer.class.getDeclaredField("mark");
+            field.setAccessible(true);
+
+            markField = field;
+        } catch (NoSuchFieldException | SecurityException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private final ByteBuffer byteBuffer;
 
     ByteBufferFixedBuffer(ByteBuffer byteBuffer) {
@@ -38,6 +52,11 @@ final class ByteBufferFixedBuffer implements FixedBuffer, HasByteBuffer {
     }
 
     @Override
+    public int capacity() {
+        return byteBuffer.capacity();
+    }
+
+    @Override
     public int position() {
         return byteBuffer.position();
     }
@@ -48,18 +67,57 @@ final class ByteBufferFixedBuffer implements FixedBuffer, HasByteBuffer {
     }
 
     @Override
-    public void flip() {
-        byteBuffer.flip();
+    public int limit() {
+        return byteBuffer.limit();
     }
 
     @Override
-    public int capacity() {
-        return byteBuffer.capacity();
+    public void limit(int newLimit) {
+        byteBuffer.limit(newLimit);
+    }
+
+    @Override
+    public void mark() {
+        byteBuffer.mark();
+    }
+
+    @Override
+    public int markValue() {
+        try {
+            return markField.getInt(byteBuffer);
+        } catch (IllegalArgumentException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void reset() {
+        byteBuffer.reset();
     }
 
     @Override
     public void clear() {
         byteBuffer.clear();
+    }
+
+    @Override
+    public void flip() {
+        byteBuffer.flip();
+    }
+
+    @Override
+    public void rewind() {
+        byteBuffer.rewind();
+    }
+
+    @Override
+    public int remaining() {
+        return byteBuffer.remaining();
+    }
+
+    @Override
+    public boolean hasRemaining() {
+        return byteBuffer.hasRemaining();
     }
 
     @Override
@@ -91,5 +149,125 @@ final class ByteBufferFixedBuffer implements FixedBuffer, HasByteBuffer {
     @Override
     public void putByte(int index, byte value) {
         byteBuffer.put(index, value);
+    }
+
+    @Override
+    public char getChar() {
+        return byteBuffer.getChar();
+    }
+
+    @Override
+    public char getChar(int index) {
+        return byteBuffer.getChar(index);
+    }
+
+    @Override
+    public void putChar(char value) {
+        byteBuffer.putChar(value);
+    }
+
+    @Override
+    public void putChar(int index, char value) {
+        byteBuffer.putChar(index, value);
+    }
+
+    @Override
+    public short getShort() {
+        return byteBuffer.getShort();
+    }
+
+    @Override
+    public short getShort(int index) {
+        return byteBuffer.getShort(index);
+    }
+
+    @Override
+    public void putShort(short value) {
+        byteBuffer.putShort(value);
+    }
+
+    @Override
+    public void putShort(int index, short value) {
+        byteBuffer.putShort(index, value);
+    }
+
+    @Override
+    public int getInt() {
+        return byteBuffer.getInt();
+    }
+
+    @Override
+    public int getInt(int index) {
+        return byteBuffer.getInt(index);
+    }
+
+    @Override
+    public void putInt(int value) {
+        byteBuffer.putInt(value);
+    }
+
+    @Override
+    public void putInt(int index, int value) {
+        byteBuffer.putInt(index, value);
+    }
+
+    @Override
+    public long getLong() {
+        return byteBuffer.getLong();
+    }
+
+    @Override
+    public long getLong(int index) {
+        return byteBuffer.getLong(index);
+    }
+
+    @Override
+    public void putLong(long value) {
+        byteBuffer.putLong(value);
+    }
+
+    @Override
+    public void putLong(int index, long value) {
+        byteBuffer.putLong(index, value);
+    }
+
+    @Override
+    public float getFloat() {
+        return byteBuffer.getFloat();
+    }
+
+    @Override
+    public float getFloat(int index) {
+        return byteBuffer.getFloat(index);
+    }
+
+    @Override
+    public void putFloat(float value) {
+        byteBuffer.putFloat(value);
+    }
+
+    @Override
+    public void putFloat(int index, float value) {
+        byteBuffer.putFloat(index, value);
+    }
+
+    @Override
+    public double getDouble() {
+        return byteBuffer.getDouble();
+    }
+
+    @Override
+    public double getDouble(int index) {
+        return byteBuffer.getDouble(index);
+    }
+
+    @Override
+    public void putDouble(double value) {
+        byteBuffer.putDouble(value);
+    }
+
+    @Override
+    public void putDouble(int index, double value) {
+        byteBuffer.putDouble(index, value);
     }
 }

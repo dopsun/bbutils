@@ -16,6 +16,7 @@
 
 package com.dopsun.bbutils;
 
+import java.nio.BufferOverflowException;
 import java.util.Objects;
 import java.util.function.IntUnaryOperator;
 
@@ -35,6 +36,7 @@ final class AutoBufferImpl implements AutoBuffer {
 
     /** this is not null, but can be changed. */
     private FixedBuffer fixedBuffer;
+    private boolean canGrow = true;
 
     /**
      * @param allocator
@@ -62,6 +64,11 @@ final class AutoBufferImpl implements AutoBuffer {
     }
 
     @Override
+    public boolean canGrow() {
+        return this.canGrow;
+    }
+
+    @Override
     public int position() {
         return fixedBuffer.position();
     }
@@ -72,13 +79,56 @@ final class AutoBufferImpl implements AutoBuffer {
     }
 
     @Override
-    public void flip() {
-        fixedBuffer.flip();
+    public int limit() {
+        return fixedBuffer.limit();
+    }
+
+    @Override
+    public void limit(int newLimit) {
+        fixedBuffer.limit(newLimit);
+        canGrow = false;
+    }
+
+    @Override
+    public void mark() {
+        fixedBuffer.mark();
+    }
+
+    @Override
+    public int markValue() {
+        return fixedBuffer.markValue();
+    }
+
+    @Override
+    public void reset() {
+        fixedBuffer.reset();
     }
 
     @Override
     public void clear() {
         fixedBuffer.clear();
+        canGrow = true;
+    }
+
+    @Override
+    public void flip() {
+        fixedBuffer.flip();
+        canGrow = false;
+    }
+
+    @Override
+    public void rewind() {
+        fixedBuffer.rewind();
+    }
+
+    @Override
+    public int remaining() {
+        return fixedBuffer.remaining();
+    }
+
+    @Override
+    public boolean hasRemaining() {
+        return fixedBuffer.hasRemaining();
     }
 
     @Override
@@ -110,10 +160,152 @@ final class AutoBufferImpl implements AutoBuffer {
         fixedBuffer.putByte(index, value);
     }
 
+    @Override
+    public char getChar() {
+        return fixedBuffer.getChar();
+    }
+
+    @Override
+    public char getChar(int index) {
+        return fixedBuffer.getChar(index);
+    }
+
+    @Override
+    public void putChar(char value) {
+        ensureCapacity(2);
+
+        fixedBuffer.putChar(value);
+    }
+
+    @Override
+    public void putChar(int index, char value) {
+        fixedBuffer.putChar(index, value);
+    }
+
+    @Override
+    public short getShort() {
+        return fixedBuffer.getShort();
+    }
+
+    @Override
+    public short getShort(int index) {
+        return fixedBuffer.getShort(index);
+    }
+
+    @Override
+    public void putShort(short value) {
+        ensureCapacity(2);
+
+        fixedBuffer.putShort(value);
+    }
+
+    @Override
+    public void putShort(int index, short value) {
+        fixedBuffer.putShort(index, value);
+    }
+
+    @Override
+    public int getInt() {
+        return fixedBuffer.getInt();
+    }
+
+    @Override
+    public int getInt(int index) {
+        return fixedBuffer.getInt(index);
+    }
+
+    @Override
+    public void putInt(int value) {
+        ensureCapacity(4);
+
+        fixedBuffer.putInt(value);
+    }
+
+    @Override
+    public void putInt(int index, int value) {
+        fixedBuffer.putInt(index, value);
+    }
+
+    @Override
+    public long getLong() {
+        return fixedBuffer.getLong();
+    }
+
+    @Override
+    public long getLong(int index) {
+        return fixedBuffer.getLong(index);
+    }
+
+    @Override
+    public void putLong(long value) {
+        ensureCapacity(8);
+
+        fixedBuffer.putLong(value);
+    }
+
+    @Override
+    public void putLong(int index, long value) {
+        fixedBuffer.putLong(index, value);
+    }
+
+    @Override
+    public float getFloat() {
+        return fixedBuffer.getFloat();
+    }
+
+    @Override
+    public float getFloat(int index) {
+        return fixedBuffer.getFloat(index);
+    }
+
+    @Override
+    public void putFloat(float value) {
+        ensureCapacity(4);
+
+        fixedBuffer.putFloat(value);
+    }
+
+    @Override
+    public void putFloat(int index, float value) {
+        fixedBuffer.putFloat(index, value);
+    }
+
+    @Override
+    public double getDouble() {
+        return fixedBuffer.getDouble();
+    }
+
+    @Override
+    public double getDouble(int index) {
+        return fixedBuffer.getDouble(index);
+    }
+
+    @Override
+    public void putDouble(double value) {
+        ensureCapacity(8);
+
+        fixedBuffer.putDouble(value);
+    }
+
+    @Override
+    public void putDouble(int index, double value) {
+        fixedBuffer.putDouble(index, value);
+    }
+
+    /**
+     * @param deltaCapacity
+     * 
+     * @throws BufferOverflowException
+     *             if buffer {@link #canGrow()} is <code>false</code> but not enough space for data.
+     */
     private void ensureCapacity(int deltaCapacity) {
         int expectedCapacity = fixedBuffer.position() + deltaCapacity;
         if (fixedBuffer.capacity() >= expectedCapacity) {
             return;
+        }
+
+        if (!canGrow) {
+            throw new BufferOverflowException();
         }
 
         int nextCapacity = nextCapacityProducer.applyAsInt(fixedBuffer.capacity());
@@ -121,9 +313,23 @@ final class AutoBufferImpl implements AutoBuffer {
             nextCapacity = nextCapacityProducer.applyAsInt(nextCapacity);
         }
 
+        int oldPosition = fixedBuffer.position();
+        int oldMarkValue = fixedBuffer.markValue();
+
+        fixedBuffer.position(0);
+
         FixedBuffer newBuffer = allocator.alloc(nextCapacity);
         fixedBuffer.flip();
         newBuffer.putBuffer(fixedBuffer);
+
+        if (oldMarkValue >= 0) {
+            newBuffer.position(oldMarkValue);
+            newBuffer.mark();
+        }
+
+        if (oldPosition != newBuffer.position()) {
+            newBuffer.position(oldPosition);
+        }
 
         allocator.release(fixedBuffer);
         fixedBuffer = newBuffer;

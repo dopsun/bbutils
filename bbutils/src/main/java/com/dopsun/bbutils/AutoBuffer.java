@@ -19,9 +19,33 @@ package com.dopsun.bbutils;
 /**
  * A buffer, which can grow when needed.
  * 
+ * <p>
+ * This buffer {@link #canGrow()} returns <code>false</code>, if {@link #limit(int)} or
+ * {@link #flip()} called. The buffer will be back to grow-able again after {@link #clear()} called.
+ * </p>
+ * 
+ * <p>
+ * Following methods will makes buffer grow:
+ * <ul>
+ * <li>{@link Buffer#putByte(byte)}</li>
+ * <li>{@link Buffer#putChar(char)}</li>
+ * <li>{@link Buffer#putShort(short)}</li>
+ * <li>{@link Buffer#putInt(int)}</li>
+ * <li>{@link Buffer#putLong(long)}</li>
+ * <li>{@link Buffer#putFloat(float)}</li>
+ * <li>{@link Buffer#putDouble(double)}</li>
+ * </ul>
+ * </p>
+ * 
  * @author Dop Sun
  * @since 1.0.0
  */
 public interface AutoBuffer extends Buffer {
-
+    /**
+     * Returns <code>false</code> if {@link #flip()} or {@link #limit(int)} called. Call
+     * {@link #clear()} to make the buffer grow-able again.
+     * 
+     * @return <code>true</code> if this buffer can grow.
+     */
+    boolean canGrow();
 }
