@@ -26,10 +26,14 @@ There are 3 types of auto buffer:
 ## Allocator
 * [Allocator](bbutils/src/main/java/com/dopsun/bbutils/Allocator.java) allocator for ``Buffer``.
   * [FixedBufferAllocator](bbutils/src/main/java/com/dopsun/bbutils/FixedBufferAllocator.java): allocator for ``FixedBufferAllocator``.
-  * [Allocators](bbutils/src/main/java/com/dopsun/bbutils/Allocators.java): factory methods for ``Allocator``.
+* [Allocators](bbutils/src/main/java/com/dopsun/bbutils/Allocators.java): factory methods for ``Allocator``.
+  * Allocator from pool: ``Allocators.fromPool(IntFunction<FixedBufferPool> poolFactory)``
 
 
 ## Pool
 * [Pool](bbutils/src/main/java/com/dopsun/bbutils/Pool.java) pool for ``Buffer``.
   * [FixedBufferPool](bbutils/src/main/java/com/dopsun/bbutils/FixedBufferPool.java) pool for ``FixedBufferAllocator``.
-  * [Pools](bbutils/src/main/java/com/dopsun/bbutils/Pools.java) factory methods for ``Pool``.
+* [Pools](bbutils/src/main/java/com/dopsun/bbutils/Pools.java) factory methods for ``Pool``.
+  * Pool from allocator:
+    * ``Pools.fromAllocator(FixedBufferAllocator allocator, int bufferCapacity)``
+    * ``Pools.fromAllocator(FixedBufferAllocator allocator, int bufferCapacity, int initSize)``
