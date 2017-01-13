@@ -40,4 +40,50 @@ public final class Pools {
 
         return new ListFixedBufferPool(buffers);
     }
+
+    /**
+     * Makes a pool from <code>allocator</code> with <code>bufferCapacity</code>.
+     * 
+     * @param allocator
+     *            allocator to allocate the buffer.
+     * @param bufferCapacity
+     *            capacity of buffer for this pool.
+     * 
+     * @return a {@link FixedBuffer} pool.
+     */
+    public static FixedBufferPool fromAllocator(FixedBufferAllocator allocator,
+            int bufferCapacity) {
+        Objects.requireNonNull(allocator);
+        if (bufferCapacity <= 0) {
+            throw new IllegalArgumentException("bufferCapacity should be greater than zero.");
+        }
+
+        return new AllocatorFixedBufferPool(allocator, bufferCapacity, -1);
+    }
+
+    /**
+     * Makes a pool from <code>allocator</code> with <code>bufferCapacity</code>. A number of buffer
+     * is created initially.
+     * 
+     * @param allocator
+     *            allocator to allocate the buffer.
+     * @param bufferCapacity
+     *            capacity of buffer for this pool.
+     * @param initSize
+     *            should be greater than zero.
+     * 
+     * @return a {@link FixedBuffer} pool.
+     */
+    public static FixedBufferPool fromAllocator(FixedBufferAllocator allocator, int bufferCapacity,
+            int initSize) {
+        Objects.requireNonNull(allocator);
+        if (bufferCapacity <= 0) {
+            throw new IllegalArgumentException("bufferCapacity should be greater than zero.");
+        }
+        if (initSize <= 0) {
+            throw new IllegalArgumentException("initSize should be greater than zero.");
+        }
+
+        return new AllocatorFixedBufferPool(allocator, bufferCapacity, initSize);
+    }
 }
