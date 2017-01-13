@@ -61,6 +61,11 @@ final class ListFixedBufferPool implements FixedBufferPool {
     }
 
     @Override
+    public void close() throws Exception {
+        list.clear();
+    }
+
+    @Override
     public int bufferCapacity() {
         return this.bufferCapacity;
     }

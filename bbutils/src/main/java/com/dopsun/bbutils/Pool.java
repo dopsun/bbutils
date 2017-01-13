@@ -22,7 +22,7 @@ package com.dopsun.bbutils;
  * @author Dop Sun
  * @since 1.0.0
  */
-public interface Pool {
+public interface Pool extends AutoCloseable {
     /**
      * Borrows a buffer from pool.
      * 
