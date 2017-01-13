@@ -7,11 +7,8 @@ java.nio.ByteBuffer related utilities.
   * [AutoBuffer](bbutils/src/main/java/com/dopsun/bbutils/AutoBuffer.java): a buffer grows when required.
   * [Buffers](bbutils/src/main/java/com/dopsun/bbutils/Buffers.java): factory methods for ``Buffer``.
 
-### Buffer
-To be added
-
 ### FixedBuffer
-To be added
+``FixedBuffer`` is an abstraction similar to ``java.nio.ByteBuffer``. Refer to [FixedBuffer](bbutils/src/main/java/com/dopsun/bbutils/FixedBuffer.java) to find out details.
 
 ### AutoBuffer
 There are 3 types of auto buffer:
