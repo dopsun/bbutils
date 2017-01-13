@@ -29,7 +29,7 @@ final class ByteBufferFixedBuffer implements FixedBuffer, HasByteBuffer {
 
     static {
         try {
-            Field field = Buffer.class.getDeclaredField("mark");
+            Field field = java.nio.Buffer.class.getDeclaredField("mark");
             field.setAccessible(true);
 
             markField = field;
