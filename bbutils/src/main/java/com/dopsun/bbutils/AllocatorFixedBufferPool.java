@@ -92,6 +92,8 @@ final class AllocatorFixedBufferPool implements FixedBufferPool {
             throw new IllegalArgumentException();
         }
 
+        buffer.clear();
+
         list.add(buffer);
     }
 

@@ -16,6 +16,9 @@
 
 package com.dopsun.bbutils;
 
+import java.util.Objects;
+import java.util.function.IntFunction;
+
 /**
  * Factory methods for {@link Allocator}.
  * 
@@ -70,5 +73,18 @@ public final class Allocators {
             heapAllocator = alloc;
             return alloc;
         }
+    }
+
+    /**
+     * Creates an allocator based on pool.
+     * 
+     * @param poolFactory
+     *            factory to create pool for specified capacity.
+     * @return an allocator which allocates from pool
+     */
+    public static FixedBufferAllocator fromPool(IntFunction<FixedBufferPool> poolFactory) {
+        Objects.requireNonNull(poolFactory);
+
+        return new PoolFixedBufferAllocator(poolFactory);
     }
 }
