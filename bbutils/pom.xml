@@ -8,6 +8,10 @@
 	</parent>
 	<artifactId>bbutils</artifactId>
 
+	<name>BBUtils</name>
+	<description>Byte Buffer Utils.</description>
+	<url>https://github.com/dopsun/bbutils</url>
+
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
