@@ -71,8 +71,6 @@ function install_gpg_key() {
     local -r ENC_KEY_FILE="$3"
     local -r KEY_FILE="$4"
 
-	printf "TEST::: $KEY, $IV, $ENC_KEY_FILE, $KEY_FILE \n"
-	
     openssl aes-256-cbc -K "$KEY" -iv "$IV" -in "$ENC_KEY_FILE" -out "$KEY_FILE" -d
     gpg2 --batch --import "$KEY_FILE"
 }
