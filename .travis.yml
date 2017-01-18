@@ -14,7 +14,5 @@ env:
 install:
   -
 script:
-  -
-after_success:
 - bash travis-deploy-sonatype/scripts/deploy.sh e4ca999fbcb4 travis/dopsun.asc.enc
   travis/settings.xml
